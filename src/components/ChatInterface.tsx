@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Bot, User, Send, ChevronRight, X, Maximize2, Minimize2, MoreHorizontal } from 'lucide-react';
+import { Bot, User, Send, MoreHorizontal } from 'lucide-react';
 import { MathBlock } from '@/components/MathBlock';
+import { GraphVisualizer } from '@/components/GraphVisualizer';
 
 interface ChatMessage {
     id: string;
@@ -12,6 +13,7 @@ interface ChatMessage {
     steps?: { id: string; latex: string; explanation: string }[];
     final_answer?: string;
     citations?: { source: string; page: number; confidence: number }[];
+    graph_context?: any;
 }
 
 export function ChatInterface() {
@@ -20,6 +22,7 @@ export function ChatInterface() {
         role: 'assistant',
         content: "Hello! I'm ActuarialGPT. Upload your notes, or ask me to solve a problem (e.g., 'Calculate the variance of a deferred annuity')."
     }]);
+    const [currentGraphData, setCurrentGraphData] = useState<any>(null);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
 
@@ -31,6 +34,7 @@ export function ChatInterface() {
         setMessages(prev => [...prev, userMsg]);
         setInput('');
         setIsTyping(true);
+        setCurrentGraphData(null); // Reset graph on new query
 
         try {
             const res = await fetch('/api/chat', {
@@ -40,13 +44,18 @@ export function ChatInterface() {
             });
             const data = await res.json();
 
+            if (data.graph_context) {
+                setCurrentGraphData(data.graph_context);
+            }
+
             setMessages(prev => [...prev, {
                 id: Date.now().toString(),
                 role: 'assistant',
                 content: data.content,
                 steps: data.steps,
                 final_answer: data.final_answer,
-                citations: data.citations
+                citations: data.citations,
+                graph_context: data.graph_context
             }]);
         } catch (err) {
             console.error(err);
@@ -154,6 +163,11 @@ export function ChatInterface() {
                     </motion.div>
                 )}
             </div>
+
+            {/* Visualizer Overlay */}
+            <AnimatePresence>
+                {currentGraphData && <GraphVisualizer data={currentGraphData} />}
+            </AnimatePresence>
 
             {/* Input */}
             <div className="p-4 border-t border-white/5 bg-black/40 backdrop-blur-md">
