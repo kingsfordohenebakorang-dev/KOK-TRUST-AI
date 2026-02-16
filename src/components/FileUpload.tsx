@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, FileText, CheckCircle2, AlertCircle, X, Loader2 } from 'lucide-react';
+import { Upload, FileText, CheckCircle2, AlertCircle, X, Loader2, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MathBlock } from './MathBlock';
 
@@ -166,6 +166,13 @@ export function FileUpload() {
                                             >
                                                 Start Upload
                                             </button>
+                                        </div>
+                                    ) : file.status === 'done' ? (
+                                        <div className="flex items-center gap-3 mt-1">
+                                            <span className="text-xs text-green-400">Indexed & Ready</span>
+                                            <a href={`/study/${file.id}`} className="px-3 py-1 text-xs bg-indigo-500 hover:bg-indigo-400 text-white rounded-full transition-colors font-medium flex items-center gap-1">
+                                                Start Studying <ChevronRight className="w-3 h-3" />
+                                            </a>
                                         </div>
                                     ) : (
                                         <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
