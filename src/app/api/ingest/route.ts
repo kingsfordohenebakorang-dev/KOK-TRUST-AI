@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { processImageWithMathPix } from '@/lib/mathpix';
 // Polyfill for pdf-parse in Next.js environment
 if (typeof Promise.withResolvers === 'undefined') {
     // @ts-ignore
@@ -34,17 +35,22 @@ export async function POST(req: Request) {
         let textContent = '';
         let extractedMath: string[] = [];
 
-        // Basic PDF Extraction
+        // Basic PDF Parsing vs Image OCR
         if (file.type === 'application/pdf') {
             const data = await pdf(buffer);
             textContent = data.text;
 
-            // Simulating Math Extraction (looking for dollar signs or similar patterns)
-            // In real app: Use MathPix or specialized OCR
+            // Regex fallback for PDF
             const mathMatches = textContent.match(/[$].*?[$]/g) || [];
-            extractedMath = mathMatches.slice(0, 3); // Preview first 3
+            extractedMath = mathMatches.slice(0, 3);
+        } else if (file.type.startsWith('image/')) {
+            // Sprint 2: Integrate MathPix OCR
+            const result = await processImageWithMathPix(buffer);
+            textContent = result.text;
+            if (result.latex_styled) {
+                extractedMath = [result.latex_styled]; // High fidelity math found
+            }
         } else {
-            // Fallback for text/etc
             textContent = buffer.toString('utf-8');
         }
 

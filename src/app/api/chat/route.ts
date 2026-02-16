@@ -1,31 +1,20 @@
 import { NextResponse } from 'next/server';
+import { solveActuarialProblem } from '@/lib/sympy';
 
 export async function POST(req: Request) {
     try {
         const { message, history } = await req.json();
 
-        // Mock response for MVP
-        // In production: Connect to OpenAI/LLM + SymPy Tool
-
-        // Simulate latency for cinematic feel
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // Connect to SymPy Solver Logic (Sprint 2)
+        const symbolicSolution = await solveActuarialProblem(message);
 
         return NextResponse.json({
             role: 'assistant',
-            content: `Here is the solution to your query about "${message.substring(0, 20)}...":
-
-The **present value** of an annuity-due is given by:
-$$ \\ddot{a}_{\\overline{n}|} = \\frac{1 - v^n}{d} $$
-
-Step 1: Calculate the discount factor $v$.
-$$ v = \\frac{1}{1+i} $$
-
-Step 2: Calculate the discount rate $d$.
-$$ d = \\frac{i}{1+i} $$
-
-Based on your uploaded notes (Week_3_Annuities.pdf, p.15), we use $i=0.05$.`,
+            content: `Here is the step-by-step derivation for your query: "${message}"`,
+            steps: symbolicSolution.steps,
+            final_answer: symbolicSolution.final_answer,
             citations: [
-                { source: 'Week_3_Annuities.pdf', page: 15, confidence: 0.95 }
+                { source: symbolicSolution.source, page: 42, confidence: 0.95 } // Mock metadata
             ]
         });
 
