@@ -26,10 +26,10 @@ export function Navbar() {
                 <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">
                     Log In
                 </button>
-                <button className="px-4 py-2 text-sm font-medium bg-white text-black rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2">
+                <Link href="/upload" className="px-4 py-2 text-sm font-medium bg-white text-black rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2">
                     <Upload className="w-4 h-4" />
                     <span>Upload Notes</span>
-                </button>
+                </Link>
             </div>
         </nav>
     );

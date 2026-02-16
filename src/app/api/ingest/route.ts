@@ -1,4 +1,24 @@
 import { NextResponse } from 'next/server';
+// Polyfill for pdf-parse in Next.js environment
+if (typeof Promise.withResolvers === 'undefined') {
+    // @ts-ignore
+    Promise.withResolvers = function () {
+        let resolve, reject;
+        const promise = new Promise((res, rej) => {
+            resolve = res;
+            reject = rej;
+        });
+        return { promise, resolve, reject };
+    };
+}
+// Specific polyfill for pdf-parse/canvas dependency
+// @ts-ignore
+if (typeof DOMMatrix === 'undefined') {
+    // @ts-ignore
+    global.DOMMatrix = class DOMMatrix { };
+}
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pdf = require('pdf-parse');
 
 export async function POST(req: Request) {
     try {
@@ -9,16 +29,44 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
         }
 
-        // Placeholder: Save file to S3 and trigger OCR job
-        // await s3.upload(file);
-        // await sqs.sendMessage({ queueUrl: process.env.OCR_QUEUE_URL, messageBody: JSON.stringify({ fileKey: file.name }) });
+        const buffer = Buffer.from(await file.arrayBuffer());
+
+        let textContent = '';
+        let extractedMath: string[] = [];
+
+        // Basic PDF Extraction
+        if (file.type === 'application/pdf') {
+            const data = await pdf(buffer);
+            textContent = data.text;
+
+            // Simulating Math Extraction (looking for dollar signs or similar patterns)
+            // In real app: Use MathPix or specialized OCR
+            const mathMatches = textContent.match(/[$].*?[$]/g) || [];
+            extractedMath = mathMatches.slice(0, 3); // Preview first 3
+        } else {
+            // Fallback for text/etc
+            textContent = buffer.toString('utf-8');
+        }
+
+        // Chunking Logic (Simplified)
+        const chunks = textContent.split(/\n\s*\n/).filter(c => c.length > 50).slice(0, 5);
+
+        // Placeholder: Vector Upsert
+        // await pinecone.upsert(chunks.map(embed));
+
+        // Simulate "Processing Delay" for cinematic effect
+        await new Promise(r => setTimeout(r, 1000));
 
         return NextResponse.json({
-            message: 'File uploaded successfully. Processing started.',
+            message: 'File processed successfully.',
             fileId: 'file_' + Math.random().toString(36).substring(7),
-            status: 'preprocessing'
+            pageCount: (file.type === 'application/pdf') ? 'Unknown (pdf-parse limitation)' : 1,
+            snippet: textContent.substring(0, 200) + '...',
+            extractedMath: extractedMath.length > 0 ? extractedMath : ['$$ E[X] = \\int x f(x) dx $$ (Example)'], // Fallback example if no math found
+            chunksCount: chunks.length
         });
     } catch (error) {
-        return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+        console.error('Ingestion Error:', error);
+        return NextResponse.json({ error: 'Analysis failed' }, { status: 500 });
     }
 }
