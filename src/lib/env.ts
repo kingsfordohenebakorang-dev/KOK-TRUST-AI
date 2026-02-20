@@ -24,7 +24,8 @@ export function getEnv(): Env {
     } catch (error) {
         if (error instanceof z.ZodError) {
             console.error("❌ Environment validation failed:");
-            error.errors.forEach((err) => {
+            const zErr = error as any;
+            zErr.errors.forEach((err: any) => {
                 console.error(`   ${err.path.join(".")}: ${err.message}`);
             });
         }

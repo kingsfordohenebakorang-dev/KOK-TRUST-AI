@@ -29,7 +29,7 @@ app.use(express.urlencoded({ limit: '10kb', extended: true }));
 app.use(dataSanitizer);
 
 // Health check endpoint (no auth required)
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
@@ -41,7 +41,7 @@ app.use('/api/auth', authLimiter);
 // app.use('/api/trust', trustRoutes);
 
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     logger.error(err);
 
     // Don't expose internal error details in production
@@ -53,7 +53,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // 404 handler
-app.use((req, res) => {
+app.use((_req, res) => {
     res.status(404).json({ error: 'Not found' });
 });
 

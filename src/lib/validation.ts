@@ -6,10 +6,11 @@ export const handleValidationErrors = (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): void => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        res.status(400).json({ errors: errors.array() });
+        return;
     }
     next();
 };

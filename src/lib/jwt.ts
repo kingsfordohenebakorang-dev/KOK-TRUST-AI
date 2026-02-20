@@ -12,15 +12,15 @@ interface JWTPayload {
 
 export class JWTManager {
     static generateToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): string {
-        return jwt.sign(payload, config.jwt.secret, {
-            expiresIn: config.jwt.expiresIn,
+        return jwt.sign(payload, config.jwt.secret as jwt.Secret, {
+            expiresIn: config.jwt.expiresIn as any,
             algorithm: 'HS256',
         });
     }
 
     static verifyToken(token: string): JWTPayload {
         try {
-            return jwt.verify(token, config.jwt.secret, {
+            return jwt.verify(token, config.jwt.secret as jwt.Secret, {
                 algorithms: ['HS256'],
             }) as JWTPayload;
         } catch (error) {
@@ -38,12 +38,13 @@ export const authenticateToken = (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): void => {
     const authHeader = req.headers['authorization'];
     const token = authHeader?.split(' ')[1]; // "Bearer TOKEN"
 
     if (!token) {
-        return res.status(401).json({ error: 'Access token required' });
+        res.status(401).json({ error: 'Access token required' });
+        return;
     }
 
     try {
@@ -51,17 +52,18 @@ export const authenticateToken = (
         (req as any).user = decoded;
         next();
     } catch (error) {
-        return res.status(403).json({ error: 'Invalid token' });
+        res.status(403).json({ error: 'Invalid token' });
     }
 };
 
 // Role-based authorization
 export const authorize = (allowedRoles: string[]) => {
-    return (req: Request, res: Response, next: NextFunction) => {
+    return (req: Request, res: Response, next: NextFunction): void => {
         const user = (req as any).user;
 
         if (!user || !allowedRoles.includes(user.role)) {
-            return res.status(403).json({ error: 'Insufficient permissions' });
+            res.status(403).json({ error: 'Insufficient permissions' });
+            return;
         }
 
         next();

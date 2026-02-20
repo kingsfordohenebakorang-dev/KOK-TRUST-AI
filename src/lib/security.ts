@@ -47,7 +47,7 @@ export const authLimiter = rateLimit({
 // Data sanitization
 export const dataSanitizer = mongoSanitize({
     replaceWith: '_',
-    onSanitize: ({ req, key }) => {
+    onSanitize: ({ req: _req, key }) => {
         console.warn(`Potential NoSQL injection detected in ${key}`);
     },
 });
@@ -57,7 +57,7 @@ export const compressionMiddleware = compression();
 
 // Custom security headers middleware
 export const customSecurityHeaders = (
-    req: Request,
+    _req: Request,
     res: Response,
     next: NextFunction
 ) => {

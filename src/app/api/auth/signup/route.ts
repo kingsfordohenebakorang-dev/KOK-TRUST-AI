@@ -43,10 +43,11 @@ export async function POST(request: NextRequest) {
         return sendSecurityHeaders(response);
     } catch (error) {
         if (error instanceof z.ZodError) {
+            const zErr = error as any;
             return NextResponse.json(
                 {
                     error: "Validation failed",
-                    issues: error.errors.map((e) => ({
+                    issues: zErr.errors.map((e: any) => ({
                         path: e.path.join("."),
                         message: e.message,
                     })),

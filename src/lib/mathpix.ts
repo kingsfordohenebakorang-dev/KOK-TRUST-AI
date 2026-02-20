@@ -41,7 +41,7 @@ export async function processImageWithMathPix(buffer: Buffer): Promise<MathPixRe
             throw new Error(`MathPix API Error: ${response.statusText}`);
         }
 
-        const data = await response.json();
+        const data = await response.json() as any;
         return {
             text: data.text,
             latex_styled: data.latex_styled,
