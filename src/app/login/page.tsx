@@ -198,9 +198,18 @@ export default function LoginPage() {
                                     <span className="flex items-center gap-1"><Check className="w-3 h-3" /> 500+ student minimum</span>
                                 </div>
                             </div>
-                            <button className="px-8 py-3 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-colors whitespace-nowrap">
-                                Contact Sales
-                            </button>
+                            <div className="flex flex-col gap-2 items-center md:items-end">
+                                <a
+                                    href="mailto:kingsfordohenebakorang@gmail.com?subject=KOK AI Institutional Plan Inquiry"
+                                    className="px-8 py-3 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-colors whitespace-nowrap text-center w-full md:w-auto"
+                                >
+                                    Contact Sales
+                                </a>
+                                <div className="text-xs text-gray-400 font-mono text-center md:text-right">
+                                    <p>Tell: <a href="tel:0242789520" className="hover:text-white transition-colors">024 278 9520</a></p>
+                                    <p><a href="mailto:kingsfordohenebakorang@gmail.com" className="hover:text-white transition-colors">kingsfordohenebakorang@gmail.com</a></p>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Boost Packs Section */}
