@@ -147,36 +147,60 @@ export default function LoginPage() {
                         key="pricing-grid"
                         initial={{ opacity: 0, x: 100 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="w-full max-w-5xl z-10"
+                        className="w-full max-w-5xl z-10 flex flex-col items-center"
                     >
-                        <div className="text-center mb-12">
+                        <div className="text-center mb-10 w-full">
                             <h2 className="text-4xl font-extrabold text-white mb-4">Choose Your Path</h2>
                             <p className="text-gray-400">Select a plan to unlock full actuarial potential.</p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-8">
                             <PricingCard
-                                title="Free"
+                                title="Free Tier"
                                 price="GH₵ 0"
                                 icon={<Shield className="w-6 h-6 text-gray-400" />}
-                                features={["Daily AI queries (3)", "Basic formulae search", "Community access"]}
+                                features={["5 Documents", "25 AI Queries", "1 Exam Generation", "No Notebook/Offline mode"]}
                                 onSelect={() => handlePlanSelect('free')}
                             />
                             <PricingCard
-                                title="Semester Pass"
-                                price="GH₵ 169"
-                                highlighted
-                                icon={<Zap className="w-6 h-6 text-yellow-400" />}
-                                features={["Unlimited AI Tutor", "Actuarial Library access", "Past Paper solutions", "Priority response"]}
+                                title="Pro Student"
+                                price="GH₵ 49"
+                                period="/mo"
+                                icon={<User className="w-6 h-6 text-blue-400" />}
+                                features={["50 Documents", "300 AI Queries", "20 Exam Generations", "Notebook Mode", "Priority Speed"]}
                                 onSelect={() => handlePlanSelect('pro')}
                             />
                             <PricingCard
-                                title="Elite"
-                                price="GH₵ 299"
-                                icon={<Crown className="w-6 h-6 text-purple-400" />}
-                                features={["All Pro features", "Professional Mentorship", "CV Review for Internships", "Custom Risk Models"]}
-                                onSelect={() => handlePlanSelect('elite')}
+                                title="KOK Semester Pass"
+                                price="GH₵ 169"
+                                period="/semester"
+                                badge="🏆 BEST VALUE"
+                                highlighted
+                                icon={<Crown className="w-6 h-6 text-yellow-400" />}
+                                features={["150 Documents", "1,200 Total Queries", "80 Exam Generations", "Verified Solutions", "Offline Mode & Priority Queue"]}
+                                onSelect={() => handlePlanSelect('semester')}
                             />
+                        </div>
+
+                        {/* Institutional Plan Banner */}
+                        <div className="w-full max-w-4xl bg-gradient-to-r from-blue-900/30 to-indigo-900/30 border border-blue-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+                            <div className="flex-1">
+                                <h3 className="text-2xl font-bold text-white flex items-center gap-2 mb-2">
+                                    <Zap className="w-6 h-6 text-blue-400" />
+                                    Institutional Plan
+                                </h3>
+                                <p className="text-gray-400 text-sm mb-3">
+                                    Dedicated section for UPSA, University of Ghana, KNUST, and UCC.
+                                </p>
+                                <div className="flex gap-4 text-xs font-mono text-gray-500">
+                                    <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Admin dashboard</span>
+                                    <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Centralized billing</span>
+                                    <span className="flex items-center gap-1"><Check className="w-3 h-3" /> 500+ student minimum</span>
+                                </div>
+                            </div>
+                            <button className="px-8 py-3 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-colors whitespace-nowrap">
+                                Contact Sales
+                            </button>
                         </div>
                     </motion.div>
                 )}
@@ -190,22 +214,27 @@ export default function LoginPage() {
 }
 
 /* --- HELPER COMPONENT: PRICING CARD --- */
-function PricingCard({ title, price, features, highlighted = false, icon, onSelect }: any) {
+function PricingCard({ title, price, period, badge, features, highlighted = false, icon, onSelect }: any) {
     return (
         <motion.div
             whileHover={{ y: -5 }}
             className={`p-8 rounded-2xl border transition-all flex flex-col ${highlighted
-                    ? 'bg-white/10 border-indigo-500 shadow-[0_0_40px_-10px_rgba(79,70,229,0.3)]'
-                    : 'bg-white/5 border-white/10'
+                ? 'bg-white/10 border-indigo-500 shadow-[0_0_40px_-10px_rgba(79,70,229,0.3)]'
+                : 'bg-white/5 border-white/10'
                 }`}
         >
             <div className="flex items-center gap-3 mb-4">
                 {icon}
                 <h3 className="text-xl font-bold">{title}</h3>
+                {badge && (
+                    <span className="ml-auto text-[10px] font-bold uppercase tracking-[0.1em] bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded">
+                        {badge}
+                    </span>
+                )}
             </div>
-            <div className="mb-6">
+            <div className="mb-6 flex items-baseline gap-1">
                 <span className="text-4xl font-bold">{price}</span>
-                <span className="text-gray-500 text-sm">/semester</span>
+                {period && <span className="text-gray-500 text-sm">{period}</span>}
             </div>
             <ul className="space-y-4 mb-8 flex-1">
                 {features.map((f: string, i: number) => (
@@ -217,8 +246,8 @@ function PricingCard({ title, price, features, highlighted = false, icon, onSele
             <button
                 onClick={onSelect}
                 className={`w-full py-3 rounded-xl font-semibold transition-all ${highlighted
-                        ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg'
-                        : 'bg-white/10 hover:bg-white/20 text-white'
+                    ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg'
+                    : 'bg-white/10 hover:bg-white/20 text-white'
                     }`}
             >
                 Get Started
