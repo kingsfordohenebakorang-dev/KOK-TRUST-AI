@@ -4,8 +4,15 @@ A premium AI-powered study platform for actuarial science students, featuring sy
 
 ## Features
 - **Cinematic UI**: Built with Next.js, Framer Motion, and Tailwind CSS.
-- **Symbolic Math**: LaTeX rendering with KaTeX.
+- **Symbolic Math**: LaTeX rendering with KaTeX and standard mathematical equations.
 - **AI Integration**: Prepared for RAG with Vector DB and LLM integration.
+
+## Usage
+
+Once the development server is running, you can:
+- **Upload Documents**: Navigate to the upload page to submit PDFs for knowledge ingestion.
+- **Explore Concepts**: Use the interactive visualizer to explore mapping of actuarial science topics (e.g., mortality tables, derivatives, life insurance mathematics).
+- **Solve Math Queries**: Utilize the symbolic math engine for clear, step-by-step actuarial solutions.
 
 ## Getting Started
 
