@@ -1,10 +1,22 @@
-"use client"
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Bot, User, Send, MoreHorizontal } from 'lucide-react';
 import { MathBlock } from '@/components/MathBlock';
 import { GraphVisualizer } from '@/components/GraphVisualizer';
+import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
+
+// ... (other imports stay same, but tool might need help if I don't list them)
+// Wait, replace_file_content replaces a block.
+// I need to add imports at top, and replace rendering in the middle.
+// Two separate operations or one big replace if contiguous?
+// They are not contiguous.
+// I will do two operations.
+// First operation: Add imports.
+
 
 interface ChatMessage {
     id: string;
@@ -16,11 +28,15 @@ interface ChatMessage {
     graph_context?: any;
 }
 
-export function ChatInterface() {
+export function ChatInterface({ mode = 'study' }: { mode?: 'study' | 'tutor' }) {
+    const defaultMessage = mode === 'tutor'
+        ? "Hello! I am your Actuarial Tutor. Ask me any conceptual question or for step-by-step problem solving."
+        : "Hello! I'm ActuarialGPT. Upload your notes, or ask me to solve a problem.";
+
     const [messages, setMessages] = useState<ChatMessage[]>([{
         id: '1',
         role: 'assistant',
-        content: "Hello! I'm ActuarialGPT. Upload your notes, or ask me to solve a problem (e.g., 'Calculate the variance of a deferred annuity')."
+        content: defaultMessage
     }]);
     const [currentGraphData, setCurrentGraphData] = useState<any>(null);
     const [input, setInput] = useState('');
@@ -40,7 +56,7 @@ export function ChatInterface() {
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMsg.content })
+                body: JSON.stringify({ message: userMsg.content, mode })
             });
             const data = await res.json();
 
@@ -110,7 +126,25 @@ export function ChatInterface() {
                                     ? "bg-white/5 border border-white/10 text-gray-200 rounded-tl-none"
                                     : "bg-indigo-600 text-white rounded-tr-none"
                             )}>
-                                <p className="whitespace-pre-wrap">{msg.content}</p>
+                                <div className="markdown-content text-sm leading-relaxed break-words">
+                                    <ReactMarkdown
+                                        remarkPlugins={[remarkMath]}
+                                        rehypePlugins={[rehypeKatex]}
+                                        components={{
+                                            h1: ({ node, ...props }) => <h1 className="text-lg font-bold text-indigo-300 mt-4 mb-2" {...props} />,
+                                            h2: ({ node, ...props }) => <h2 className="text-base font-bold text-white mt-3 mb-2" {...props} />,
+                                            h3: ({ node, ...props }) => <h3 className="text-sm font-bold text-gray-200 mt-3 mb-1 uppercase tracking-wide" {...props} />,
+                                            p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
+                                            ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-3 space-y-1" {...props} />,
+                                            ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-3 space-y-1" {...props} />,
+                                            li: ({ node, ...props }) => <li className="pl-1" {...props} />,
+                                            blockquote: ({ node, ...props }) => <blockquote className="border-l-2 border-indigo-500 pl-3 italic text-gray-400 my-2" {...props} />,
+                                            code: ({ node, ...props }) => <code className="bg-black/30 px-1 py-0.5 rounded text-xs font-mono text-indigo-200" {...props} />,
+                                        }}
+                                    >
+                                        {msg.content}
+                                    </ReactMarkdown>
+                                </div>
 
                                 {/* Steps Rendering */}
                                 {msg.steps && (

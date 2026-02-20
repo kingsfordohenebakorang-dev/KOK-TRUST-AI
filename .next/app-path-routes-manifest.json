@@ -1,0 +1,14 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/chat/route": "/api/chat",
+  "/api/ingest/route": "/api/ingest",
+  "/chat/page": "/chat",
+  "/dashboard/page": "/dashboard",
+  "/exams/page": "/exams",
+  "/favicon.ico/route": "/favicon.ico",
+  "/login/page": "/login",
+  "/page": "/",
+  "/study/[id]/page": "/study/[id]",
+  "/upload/page": "/upload"
+}

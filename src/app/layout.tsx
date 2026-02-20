@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Actuarial GPT | The Cinematic Study Platform",
+  title: "KOK TRUST AI | The Cinematic Study Platform",
   description: "AI-powered actuarial science study platform with symbolic math solving and provenance-backed notes.",
 };
 

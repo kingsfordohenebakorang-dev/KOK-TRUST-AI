@@ -4,18 +4,18 @@ import { router } from '@/lib/router';
 
 export async function POST(req: Request) {
     try {
-        const { message, history } = await req.json();
+        const { message, history, mode } = await req.json();
 
         // Connect to Router (Sprint 3)
-        // const symbolicSolution = await solveActuarialProblem(message); // Replaced with Router
-        const routerResult = await router.process(message);
+        // Pass mode ('study' or 'tutor')
+        const routerResult = await router.process(message, mode || 'study');
 
         // If Hybrid/Conceptual, attach graph context to response
         const graphData = routerResult.graph_context ? routerResult.graph_context : null;
 
         return NextResponse.json({
             role: 'assistant',
-            content: `According to ${routerResult.source} derived for your query: "${message}"`,
+            content: routerResult.content || `According to ${routerResult.source} derived for your query: "${message}"`,
             steps: routerResult.steps,
             final_answer: routerResult.final_answer,
             citations: [

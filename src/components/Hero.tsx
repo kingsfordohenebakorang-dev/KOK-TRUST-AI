@@ -23,12 +23,12 @@ export function Hero() {
                     >
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-indigo-300 mb-6">
                             <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-                            Actuarial Intelligence v1.0
+                            KOK TRUST AI v1.0
                         </div>
 
                         <h1 className="text-5xl md:text-7xl font-bold tracking-tighter leading-[1.1]">
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500">
-                                Master Actuarial <br /> Science with AI
+                                Master Actuarial <br /> Science with KOK TRUST AI
                             </span>
                         </h1>
                     </motion.div>
@@ -49,16 +49,16 @@ export function Hero() {
                         transition={{ duration: 0.8, delay: 0.4 }}
                         className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
                     >
-                        <button className="group relative px-8 py-4 bg-white text-black rounded-xl font-bold overflow-hidden transition-transform hover:scale-105">
+                        <Link href="/dashboard" className="group relative px-8 py-4 bg-white text-black rounded-xl font-bold overflow-hidden transition-transform hover:scale-105 inline-flex items-center justify-center">
                             <span className="relative z-10 flex items-center gap-2">
                                 Start Studying <ArrowRight className="w-4 h-4" />
                             </span>
                             <div className="absolute inset-0 bg-gradient-to-r from-indigo-200 to-purple-200 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </button>
+                        </Link>
 
-                        <button className="px-8 py-4 rounded-xl border border-white/10 hover:bg-white/5 text-white font-medium transition-colors flex items-center gap-2">
+                        <Link href="/exams" className="px-8 py-4 rounded-xl border border-white/10 hover:bg-white/5 text-white font-medium transition-colors flex items-center justify-center gap-2">
                             <BookOpen className="w-4 h-4 text-indigo-400" /> View Syllabus
-                        </button>
+                        </Link>
                     </motion.div>
 
                     <motion.div

@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  tier          Tier      @default(FREE)
+  
+  // Feature Entitlements
+  queryLimit    Int       @default(25)   // Reset monthly or total
+  examLimit     Int       @default(1)
+  uploadLimit   Int       @default(5)
+
+  // Current Usage
+  queriesUsed   Int       @default(0)
+  examsUsed     Int       @default(0)
+  uploadsUsed   Int       @default(0)
+
+  // Financials
+  subscriptionId String?  // Links to Paystack/MoMo reference
+  expiresAt     DateTime? // Crucial for "Semester Pass" (Set to 4 months)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum Tier {
+  FREE
+  PRO
+  SEMESTER
+  INSTITUTIONAL
+}

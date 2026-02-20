@@ -2,15 +2,17 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Apple, ArrowRight } from 'lucide-react';
+import { Mail, Lock, ArrowRight, User } from 'lucide-react';
 
 export default function LoginPage() {
+    const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
@@ -19,11 +21,22 @@ export default function LoginPage() {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         if (email === 'admin@actuary.com' && password === 'admin') {
-            window.location.href = '/dashboard'; // Redirect to dashboard
+            window.location.href = '/dashboard';
+        } else if (isSignUp) {
+            // Mock Registration Success
+            window.location.href = '/dashboard';
         } else {
             setError('Invalid credentials');
             setIsLoading(false);
         }
+    };
+
+    const handleGoogleLogin = async () => {
+        setIsLoading(true);
+        setError(null);
+        // Simulate Google Auth
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        window.location.href = '/dashboard';
     };
 
     return (
@@ -33,17 +46,46 @@ export default function LoginPage() {
             <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] z-0 animate-pulse" />
 
             <motion.div
+                layout
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl z-10 relative"
             >
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Welcome Back</h1>
-                    <p className="text-sm text-gray-400 mt-2">Sign in to continue your actuarial journey.</p>
+                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                        {isSignUp ? "Create Account" : "Welcome Back"}
+                    </h1>
+                    <p className="text-sm text-gray-400 mt-2">
+                        {isSignUp ? "Join the elite actuarial learning platform." : "Sign in to continue your actuarial journey."}
+                    </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <AnimatePresence>
+                        {isSignUp && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="space-y-2 overflow-hidden"
+                            >
+                                <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold ml-1">Full Name</label>
+                                <div className="relative group">
+                                    <User className="absolute left-4 top-3.5 w-4 h-4 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder:text-gray-600"
+                                        placeholder="John Doe"
+                                        required={isSignUp}
+                                    />
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
                     <div className="space-y-2">
                         <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold ml-1">Email</label>
                         <div className="relative group">
@@ -95,7 +137,7 @@ export default function LoginPage() {
                         {isLoading ? (
                             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         ) : (
-                            <>Sign In <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></>
+                            <>{isSignUp ? "Create Account" : "Sign In"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></>
                         )}
                     </button>
                 </form>
@@ -106,20 +148,26 @@ export default function LoginPage() {
                     <div className="h-px bg-white/10 flex-1" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <button className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl py-2.5 transition-colors text-sm text-gray-300">
+                <div>
+                    <button
+                        type="button"
+                        onClick={handleGoogleLogin}
+                        className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl py-2.5 transition-colors text-sm text-gray-300"
+                    >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .533 5.333.533 12S5.867 24 12.48 24c3.44 0 6.013-1.133 8.053-3.24 2.08-2.16 2.72-5.333 2.72-8.053 0-.773-.08-1.52-.213-2.293h-10.56z" /></svg>
                         Google
-                    </button>
-                    <button className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl py-2.5 transition-colors text-sm text-gray-300">
-                        <Apple className="w-4 h-4" />
-                        Apple
                     </button>
                 </div>
 
                 <div className="mt-8 text-center">
                     <p className="text-xs text-gray-500">
-                        Don't have an account? <a href="/register" className="text-indigo-400 hover:text-indigo-300 transition-colors">Sign up for free</a>
+                        {isSignUp ? "Already have an account?" : "Don't have an account?"}
+                        <button
+                            onClick={() => setIsSignUp(!isSignUp)}
+                            className="text-indigo-400 hover:text-indigo-300 transition-colors ml-1 font-semibold hover:underline"
+                        >
+                            {isSignUp ? "Log in" : "Sign up for free"}
+                        </button>
                     </p>
                 </div>
             </motion.div>
