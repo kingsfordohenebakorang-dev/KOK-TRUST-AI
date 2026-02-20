@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, ArrowRight, User, Check, Zap, Shield, Crown } from 'lucide-react';
+import { Mail, Lock, ArrowRight, User, Check, Zap, Shield, Crown, RefreshCw } from 'lucide-react';
 
 export default function LoginPage() {
     // 1. New 'step' state to manage flow: 'auth' -> 'pricing'
@@ -183,7 +183,7 @@ export default function LoginPage() {
                         </div>
 
                         {/* Institutional Plan Banner */}
-                        <div className="w-full max-w-4xl bg-gradient-to-r from-blue-900/30 to-indigo-900/30 border border-blue-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+                        <div className="w-full max-w-4xl bg-gradient-to-r from-blue-900/30 to-indigo-900/30 border border-blue-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl mb-8">
                             <div className="flex-1">
                                 <h3 className="text-2xl font-bold text-white flex items-center gap-2 mb-2">
                                     <Zap className="w-6 h-6 text-blue-400" />
@@ -201,6 +201,46 @@ export default function LoginPage() {
                             <button className="px-8 py-3 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-colors whitespace-nowrap">
                                 Contact Sales
                             </button>
+                        </div>
+
+                        {/* Boost Packs Section */}
+                        <div className="w-full max-w-4xl bg-white/5 border border-white/10 rounded-2xl p-8 mb-20 shadow-xl overflow-x-auto">
+                            <div className="mb-6">
+                                <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-2">
+                                    <RefreshCw className="w-5 h-5 text-indigo-400" />
+                                    KOK Boost Packs (For Heavy Users)
+                                </h3>
+                                <p className="text-sm text-gray-400">
+                                    If you exceed your monthly/semester limit, you can unlock additional usage instantly.
+                                </p>
+                            </div>
+
+                            <table className="w-full text-left border-collapse min-w-max">
+                                <thead>
+                                    <tr className="border-b border-white/10 text-gray-300">
+                                        <th className="py-3 font-semibold w-1/4">Boost Pack</th>
+                                        <th className="py-3 font-semibold w-1/4">Price</th>
+                                        <th className="py-3 font-semibold w-1/2">Includes</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-sm text-gray-400">
+                                    <tr className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                        <td className="py-4 text-white font-medium">Mini Boost</td>
+                                        <td className="py-4">GH₵ 15</td>
+                                        <td className="py-4">+100 queries</td>
+                                    </tr>
+                                    <tr className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                        <td className="py-4 text-white font-medium">Study Boost</td>
+                                        <td className="py-4">GH₵ 35</td>
+                                        <td className="py-4">+300 queries</td>
+                                    </tr>
+                                    <tr className="hover:bg-white/5 transition-colors">
+                                        <td className="py-4 text-white font-medium">Exam Boost</td>
+                                        <td className="py-4">GH₵ 50</td>
+                                        <td className="py-4">+10 extra exam generations + 200 queries</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </motion.div>
                 )}
