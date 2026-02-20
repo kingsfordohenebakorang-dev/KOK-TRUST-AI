@@ -40,3 +40,5 @@ To push this to your GitHub repository:
    git branch -M main
    git push -u origin main
    ```
+
+# KOK-TRUST-AI
